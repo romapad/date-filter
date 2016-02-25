@@ -136,7 +136,7 @@ class GR_Widget_Date_Filter extends WC_Widget {
 		if ( $mind == $maxd ) {
 			return;
 		}   
-        
+
         function dateDifference($date_1 , $date_2 , $diffFormat = '%a' )
         {
             $datetime1 = date_create($date_1);
@@ -147,6 +147,8 @@ class GR_Widget_Date_Filter extends WC_Widget {
         }
         
         $maxd = dateDifference($mind, $maxd);
+        
+        $maxd = 30;
         $mind = 0;
  
 		$this->widget_start( $args, $instance );

@@ -163,17 +163,17 @@ class GR_WC_Query extends WC_Query {
 
 			$matched_products = array();
 			$mind              = isset( $_GET['min_date'] ) ? $_GET['min_date'] : 0;
-			$maxd              = isset( $_GET['max_date'] ) ? $_GET['max_date'] : 999999999999999999;
+			$maxd              = isset( $_GET['max_date'] ) ? $_GET['max_date'] : 9999999999;
 
 
 				$matched_products_query = apply_filters( 'woocommerce_date_filter_results', $wpdb->get_results( $wpdb->prepare( "
 					SELECT DISTINCT ID, post_date, post_parent, post_type FROM {$wpdb->posts}
 					WHERE post_type IN ( 'product' )
 					AND post_status = 'publish'
-					AND (post_date + 0) BETWEEN %f AND %f
+					AND DATEDIFF(post_date, (SELECT min(post_date) FROM {$wpdb->posts} WHERE post_type IN ( 'product' ) AND post_date != '')) BETWEEN %s AND %s
 				", $mind, $maxd ), OBJECT_K ), $mind, $maxd );
             
-            print_r($matched_products_query);
+                // print_r($matched_products_query);
             
 				if ( $matched_products_query ) {
 					foreach ( $matched_products_query as $product ) {
