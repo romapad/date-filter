@@ -1,7 +1,7 @@
-/* global woocommerce_price_slider_params */
+/* global woocommerce_date_slider_params */
 jQuery( function( $ ) {
 
-	// woocommerce_price_slider_params is required to continue, ensure the object exists
+	// woocommerce_date_slider_params is required to continue, ensure the object exists
 	if ( typeof woocommerce_date_slider_params === 'undefined' ) {
 		return false;
 	}
@@ -10,33 +10,34 @@ jQuery( function( $ ) {
 	$( 'input#min_date, input#max_date' ).hide();
 	$( '.date_slider, .date_label' ).show();
 
-	// Price slider uses jquery ui
-	var min_date = $( '.date_slider_amount #min_date' ).data( 'date' ),
-		max_date = $( '.date_slider_amount #max_date' ).data( 'date' ),
+	// Date slider uses jquery ui
+	var min_date = $( '.date_slider_amount #min_date' ).data( 'min' ),
+		max_date = $( '.date_slider_amount #max_date' ).data( 'max' ),
 		current_min_date = parseInt( min_date, 10 ),
 		current_max_date = parseInt( max_date, 10 );
-
+    
 	if ( woocommerce_date_slider_params.min_date ) {
 		current_min_date = parseInt( woocommerce_date_slider_params.min_date, 10 );
 	}
 	if ( woocommerce_date_slider_params.max_date ) {
 		current_max_date = parseInt( woocommerce_date_slider_params.max_date, 10 );
-	}
+	}   
 
-	$( document.body ).bind( 'date_slider_create date_slider_slide', function( event, min, max ) {
+	$( document.body ).bind( 'date_slider_create date_slider_slide', function( event, mind, maxd ) {
 
-			$( '.date_slider_amount span.from' ).html(min );
-			$( '.date_slider_amount span.to' ).html(max );
+			$( '.date_slider_amount span.from' ).html(mind );
+			$( '.date_slider_amount span.to' ).html(maxd );
 
 
-		$( document.body ).trigger( 'date_slider_updated', [ min, max ] );
-	});
-
+		$( document.body ).trigger( 'date_slider_updated', [ mind, maxd ] );
+	}); 
+    
 	$( '.date_slider' ).slider({
 		range: true,
 		animate: true,
 		min: min_date,
 		max: max_date,
+        step: 5,
 		values: [ current_min_date, current_max_date ],
 		create: function() {
 

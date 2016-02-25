@@ -58,7 +58,9 @@ class GR_Widget_Date_Filter extends WC_Widget {
 		$min_date = isset( $_GET['min_date'] ) ? esc_attr( $_GET['min_date'] ) : '';
 		$max_date = isset( $_GET['max_date'] ) ? esc_attr( $_GET['max_date'] ) : '';
 
-		wp_enqueue_script( 'wc-date-slider' );
+		wp_enqueue_script( 'wc-date-slider' );       
+        
+        
 
 		// Remember current filters/search
 		$fields = '';
@@ -96,17 +98,17 @@ class GR_Widget_Date_Filter extends WC_Widget {
 		}
 
 		if ( 0 === sizeof( WC()->query->layered_nav_product_ids ) ) {
-			$min = $wpdb->get_var( "
+			$mind = $wpdb->get_var( "
 				SELECT min(post_date)
 				FROM {$wpdb->posts} as posts
 				WHERE post_date != ''
 			" );
-			$max = $wpdb->get_var( "
+			$maxd = $wpdb->get_var( "
 				SELECT max(post_date)
 				FROM {$wpdb->posts} as posts
 			" );
 		} else {
-			$min = $wpdb->get_var( "
+			$mind = $wpdb->get_var( "
 				SELECT min(post_date)
 				FROM {$wpdb->posts} as posts
 				WHERE post_date != ''
@@ -118,7 +120,7 @@ class GR_Widget_Date_Filter extends WC_Widget {
 					)
 				)
 			" );
-			$max = $wpdb->get_var( "
+			$maxd = $wpdb->get_var( "
 				SELECT max(post_date)
 				FROM {$wpdb->posts} as posts
 				WHERE (
@@ -131,10 +133,22 @@ class GR_Widget_Date_Filter extends WC_Widget {
 			" );
 		}
 
-		if ( $min == $max ) {
+		if ( $mind == $maxd ) {
 			return;
-		}
-
+		}   
+        
+        function dateDifference($date_1 , $date_2 , $diffFormat = '%a' )
+        {
+            $datetime1 = date_create($date_1);
+            $datetime2 = date_create($date_2);
+            $interval = date_diff($datetime1, $datetime2);
+            return $interval->format($diffFormat);
+            
+        }
+        
+        $maxd = dateDifference($mind, $maxd);
+        $mind = 0;
+ 
 		$this->widget_start( $args, $instance );
 
 		if ( '' == get_option( 'permalink_structure' ) ) {
@@ -146,22 +160,21 @@ class GR_Widget_Date_Filter extends WC_Widget {
 
 
 		echo '<form method="get" action="' . esc_url( $form_action ) . '">
-			<div class="date_filter_wrapper">
+			<div class="date_slider_wrapper">
                 <div class="date_slider" style="display:none;"></div>
 				<div class="date_slider_amount">
-					<input type="text" id="min_date" name="min_date" value="' . esc_attr( $min_date ) . '" data-min="' . esc_attr( apply_filters( 'woocommerce_date_filter_widget_min_date', $min ) ) . '" placeholder="' . esc_attr__('Min Date', 'woocommerce' ) . '" />
-					<input type="text" id="max_date" name="max_date" value="' . esc_attr( $max_date ) . '" data-max="' . esc_attr( apply_filters( 'woocommerce_date_filter_widget_max_date', $max ) ) . '" placeholder="' . esc_attr__( 'Max Date', 'woocommerce' ) . '" />
+					<input type="text" id="min_date" name="min_date" value="' . esc_attr( $min_date ) . '" data-min="' . esc_attr( apply_filters( 'woocommerce_date_filter_widget_min_date', $mind ) ) . '" placeholder="' . esc_attr__('Min Date', 'woocommerce' ) . '" />
+					<input type="text" id="max_date" name="max_date" value="' . esc_attr( $max_date ) . '" data-max="' . esc_attr( apply_filters( 'woocommerce_date_filter_widget_max_date', $maxd ) ) . '" placeholder="' . esc_attr__( 'Max Date', 'woocommerce' ) . '" />
 					<button type="submit" class="button">' . __( 'Filter', 'woocommerce' ) . '</button>
 					<div class="date_label" style="display:none;">
-						' . __( 'Date:', 'woocommerce' ) . ' last <span class="from"></span> days <span class="to"></span>
+						' . __( 'Date:', 'woocommerce' ) . ' <span class="from"></span> &mdash; <span class="to"></span>
 					</div>
 					' . $fields . '
 					<div class="clear"></div>
 				</div>
 			</div>
 		</form>';
-        echo $min. '<br>';
-        echo $max;
+		$this->widget_end( $args );
 	}
 }
 

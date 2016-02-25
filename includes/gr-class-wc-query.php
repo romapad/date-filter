@@ -59,6 +59,93 @@ class GR_WC_Query extends WC_Query {
 			) );            
             
 			add_filter( 'loop_shop_post_in', array( $this, 'date_filter' ) );
+            
+        function date_filter_style_to_head () { ?>
+<style>
+.widget_date_filter .date_slider_amount .button:hover,
+.widget_date_filter .ui-slider .ui-slider-range,
+.woocommerce .widget_date_filter .ui-slider .ui-slider-range {
+    background: #eb1b23 !important;
+}
+.widget .date_slider_wrapper,
+.widget_date_filter .date_slider_amount {
+    margin: 20px 0 0 0 !important;
+}
+.woocommerce .widget_date_filter .date_slider_wrapper .ui-slider {
+    height: 6px;
+    background: #d7d7d7 !important;
+    border-radius: 1em !important;
+    border: 0;
+    position: relative;
+    text-align: left;
+    margin-left: .5em;
+    margin-right: .5em;
+    margin-bottom: 1em;	
+}
+.woocommerce .widget_date_filter .ui-slider .ui-slider-range {
+    position: absolute !important;
+    z-index: 1 !important;
+    font-size: .7em !important;
+    display: block !important;
+    border: 0 !important;
+    box-shadow: inset 0 0 0 0 rgba(0,0,0,0.5) !important;
+    -webkit-box-shadow: inset 0 0 0 0 rgba(0,0,0,0.5) !important;
+    -moz-box-shadow: inset 0 0 0 0 rgba(0,0,0,0.5) !important;
+    border-radius: 0 !important;
+    background-color: #a46497;
+    top: 0;
+    height: 100%;	
+}
+.woocommerce .widget_date_filter .ui-slider .ui-slider-handle {
+    margin-left: -.5em;
+    color: #f6f6f6;
+    border: 1px solid #ccc !important;
+    background: #717171 !important;
+    width: 15px !important;
+    height: 15px !important;
+    cursor: pointer !important;
+    outline: none !important;
+    border-radius: 1em !important;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 0 0 5px rgba(255,255,255,0.9) !important;
+    -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 0 0 5px rgba(255,255,255,0.9) !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 0 0 5px rgba(255,255,255,0.9 !important);
+    position: absolute !important;
+    top: -6px !important;
+    z-index: 2 !important;
+    transition: none;
+    -webkit-transition: none;
+}
+.woocommerce .widget_date_filter .date_slider_amount {
+    text-align: right;
+    line-height: 2.4;
+    font-size: .8751em;
+}
+.widget_date_filter .date_slider_amount .button {
+    float: right !important;
+	padding: 10px 15px !important;
+}
+.widget_date_filter .date_label {
+    text-align: left !important;
+    padding: 5px 0;
+}
+.widget_date_filter .date_label {
+    font-size: 0;
+}    
+.widget_date_filter .date_label span {
+    font-size: 12px;
+}
+.widget_date_filter .date_label span:first-of-type:after {
+    content: "-";
+    display: inline-block;
+    margin: 0 5px;
+}     
+</style>
+        	
+        <?php }      
+        add_action('wp_print_styles', 'date_filter_style_to_head'); 
+                    
+            
+            
 		}
         
 	}
@@ -75,18 +162,18 @@ class GR_WC_Query extends WC_Query {
 		if ( isset( $_GET['max_date'] ) || isset( $_GET['min_date'] ) ) {
 
 			$matched_products = array();
-			$min              = isset( $_GET['min_date'] ) ? $_GET['min_date'] : 0;
-			$max              = isset( $_GET['max_date'] ) ? $_GET['max_date'] : 999999999999999999;
+			$mind              = isset( $_GET['min_date'] ) ? $_GET['min_date'] : 0;
+			$maxd              = isset( $_GET['max_date'] ) ? $_GET['max_date'] : 999999999999999999;
 
 
 				$matched_products_query = apply_filters( 'woocommerce_date_filter_results', $wpdb->get_results( $wpdb->prepare( "
 					SELECT DISTINCT ID, post_date, post_parent, post_type FROM {$wpdb->posts}
 					WHERE post_type IN ( 'product' )
 					AND post_status = 'publish'
-					AND post_date BETWEEN %s AND %s
-				", $min, $max ), OBJECT_K ), $min, $max );
+					AND (post_date + 0) BETWEEN %f AND %f
+				", $mind, $maxd ), OBJECT_K ), $mind, $maxd );
             
-            print_r($wpdb->get_results);
+            print_r($matched_products_query);
             
 				if ( $matched_products_query ) {
 					foreach ( $matched_products_query as $product ) {
@@ -108,7 +195,7 @@ class GR_WC_Query extends WC_Query {
 				$filtered_posts = array_intersect( $filtered_posts, $matched_products );
 			}
 			$filtered_posts[] = 0;
-		}
+		} 
 
 		return (array) $filtered_posts;
 	}    
