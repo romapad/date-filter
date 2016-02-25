@@ -1,6 +1,6 @@
 <?php 
 /*
-Plugin Name: Woocommerce sort products by amount of days
+Plugin Name: Woocommerce Date Range Filter
 Plugin URI: http://
 Description: 
 Version: 0.1
