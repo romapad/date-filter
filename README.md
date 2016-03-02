@@ -1,6 +1,7 @@
 # date-filter
 Woo Date Range Filter widget
 
+actually now it is more then simply date filter, as it is include also category filter.
 
 @ToDo
 
