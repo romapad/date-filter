@@ -72,6 +72,8 @@ class GR_Date_Filter {
 
 		define( 'GR_DATE_FILTER_URL', plugin_dir_url( __FILE__ ) );
 		define( 'GR_DATE_FILTER_DIR', plugin_dir_path( __FILE__ ) );
+        define( 'GR_PRODUCTS_CATEGORY', 'product_cat' ); 
+        
 	}
          
 

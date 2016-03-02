@@ -49,7 +49,6 @@ class GR_WC_Query extends WC_Query {
 	 */
 	public function cat_layered_nav_init() {   
 		if ( apply_filters( 'woocommerce_is_date_filter_active', is_active_widget( false, false, 'woocommerce_date_filter', true ) ) && ! is_admin() ) {
-            define( 'GR_PRODUCTS_CATEGORY', 'product_cat' ); 
             
         	/**
         	 * ob_add_categories_filter function
