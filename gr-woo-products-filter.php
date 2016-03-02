@@ -1,6 +1,6 @@
 <?php 
 /*
-Plugin Name: Woocommerce Date Range Filter
+Plugin Name: Woocommerce Date Range & Category Filter
 Plugin URI: http://
 Description: 
 Version: 0.1

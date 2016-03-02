@@ -1,7 +1,7 @@
 # date-filter
-Woo Date Range Filter widget
+Woo Date Range & Category Filter widget
 
-actually now it is more then simply date filter, as it is include also category filter.
+actually now it is more then simply date filter, as it is include also category filter, so i changed the name of plugin
 
 @ToDo
 
