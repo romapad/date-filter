@@ -59,7 +59,7 @@ class GR_Widget_Date_Filter extends WC_Widget {
 		$max_date = isset( $_GET['max_date'] ) ? esc_attr( $_GET['max_date'] ) : '';
 
 		wp_enqueue_script( 'wc-date-slider' );       
-        
+        wp_enqueue_style( 'wc-date-slider' );
         
 
 		// Remember current filters/search

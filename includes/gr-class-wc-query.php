@@ -52,97 +52,14 @@ class GR_WC_Query extends WC_Query {
 
 			wp_register_script( 'wc-jquery-ui-touchpunch', WC()->plugin_url() . '/assets/js/jquery-ui-touch-punch/jquery-ui-touch-punch' . $suffix . '.js', array( 'jquery-ui-slider' ), WC_VERSION, true );
 			wp_register_script( 'wc-date-slider', GR_DATE_FILTER_URL . '/assets/js/date-slider' . $suffix . '.js', array( 'jquery-ui-slider', 'wc-jquery-ui-touchpunch' ), WC_VERSION, true );
+            wp_register_style( 'wc-date-slider', GR_DATE_FILTER_URL . '/assets/css/date-slider' . $suffix . '.css' );
 
 			wp_localize_script( 'wc-date-slider', 'woocommerce_date_slider_params', array(
 				'min_date'			=> isset( $_GET['min_date'] ) ? esc_attr( $_GET['min_date'] ) : '',
 				'max_date'			=> isset( $_GET['max_date'] ) ? esc_attr( $_GET['max_date'] ) : ''
 			) );            
             
-			add_filter( 'loop_shop_post_in', array( $this, 'date_filter' ) );
-            
-        function date_filter_style_to_head () { ?>
-<style>
-.widget_date_filter .date_slider_amount .button:hover,
-.widget_date_filter .ui-slider .ui-slider-range,
-.woocommerce .widget_date_filter .ui-slider .ui-slider-range {
-    background: #eb1b23 !important;
-}
-.widget .date_slider_wrapper,
-.widget_date_filter .date_slider_amount {
-    margin: 20px 0 0 0 !important;
-}
-.woocommerce .widget_date_filter .date_slider_wrapper .ui-slider {
-    height: 6px;
-    background: #d7d7d7 !important;
-    border-radius: 1em !important;
-    border: 0;
-    position: relative;
-    text-align: left;
-    margin-left: .5em;
-    margin-right: .5em;
-    margin-bottom: 1em;	
-}
-.woocommerce .widget_date_filter .ui-slider .ui-slider-range {
-    position: absolute !important;
-    z-index: 1 !important;
-    font-size: .7em !important;
-    display: block !important;
-    border: 0 !important;
-    box-shadow: inset 0 0 0 0 rgba(0,0,0,0.5) !important;
-    -webkit-box-shadow: inset 0 0 0 0 rgba(0,0,0,0.5) !important;
-    -moz-box-shadow: inset 0 0 0 0 rgba(0,0,0,0.5) !important;
-    border-radius: 0 !important;
-    background-color: #a46497;
-    top: 0;
-    height: 100%;	
-}
-.woocommerce .widget_date_filter .ui-slider .ui-slider-handle {
-    margin-left: -.5em;
-    color: #f6f6f6;
-    border: 1px solid #ccc !important;
-    background: #717171 !important;
-    width: 15px !important;
-    height: 15px !important;
-    cursor: pointer !important;
-    outline: none !important;
-    border-radius: 1em !important;
-    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 0 0 5px rgba(255,255,255,0.9) !important;
-    -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 0 0 5px rgba(255,255,255,0.9) !important;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.3), inset 0 0 0 5px rgba(255,255,255,0.9 !important);
-    position: absolute !important;
-    top: -6px !important;
-    z-index: 2 !important;
-    transition: none;
-    -webkit-transition: none;
-}
-.woocommerce .widget_date_filter .date_slider_amount {
-    text-align: right;
-    line-height: 2.4;
-    font-size: .8751em;
-}
-.widget_date_filter .date_slider_amount .button {
-    float: right !important;
-	padding: 10px 15px !important;
-}
-.widget_date_filter .date_label {
-    text-align: left !important;
-    padding: 5px 0;
-}
-.widget_date_filter .date_label {
-    font-size: 0;
-}    
-.widget_date_filter .date_label span {
-    font-size: 12px;
-}
-.widget_date_filter .date_label span:first-of-type:after {
-    content: "-";
-    display: inline-block;
-    margin: 0 5px;
-}     
-</style>
-        	
-        <?php }      
-        add_action('wp_print_styles', 'date_filter_style_to_head'); 
+			add_filter( 'loop_shop_post_in', array( $this, 'date_filter' ) );    
                          
 		}
         
