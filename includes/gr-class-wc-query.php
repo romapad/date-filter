@@ -27,7 +27,8 @@ class GR_WC_Query extends WC_Query {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'date_filter_init' ) );
-
+        add_action( 'init', array( $this, 'cat_layered_nav_init' ) );
+        
 		if ( ! is_admin() ) {
 			add_action( 'wp_loaded', array( $this, 'get_errors' ), 20 );
 			add_filter( 'query_vars', array( $this, 'add_query_vars'), 0 );
@@ -41,6 +42,56 @@ class GR_WC_Query extends WC_Query {
 		$this->init_query_vars();
         
 	} 
+    
+    
+	/**
+	 * Category Layered Nav Init.
+	 */
+	public function cat_layered_nav_init() {   
+		if ( apply_filters( 'woocommerce_is_date_filter_active', is_active_widget( false, false, 'woocommerce_date_filter', true ) ) && ! is_admin() ) {
+            define( 'GR_PRODUCTS_CATEGORY', 'product_cat' ); 
+            
+        	/**
+        	 * ob_add_categories_filter function
+        	 *
+        	 * Sets the global $chosen_attributes to include the Product Categories
+        	 *
+        	 * @param array $filtered_posts
+        	 *
+        	 * @return array $filtered_posts
+        	 */
+        	function ob_add_categories_filter( $filtered_posts ) {
+        		global $_chosen_attributes;
+        
+        		$taxonomy        = wc_sanitize_taxonomy_name( GR_PRODUCTS_CATEGORY );
+        		$name            = 'filter_' . GR_PRODUCTS_CATEGORY;
+        		$query_type_name = 'query_type_' . GR_PRODUCTS_CATEGORY;
+        
+        		if ( ! empty( $_GET[ $name ] ) && taxonomy_exists( $taxonomy ) ) {
+        
+        			$_chosen_attributes[ $taxonomy ]['terms'] = explode( ',', $_GET[ $name ] );
+        
+        			if ( empty( $_GET[ $query_type_name ] ) || ! in_array( strtolower( $_GET[ $query_type_name ] ), array(
+        					'and',
+        					'or'
+        				) )
+        			) {
+        				$_chosen_attributes[ $taxonomy ]['query_type'] = apply_filters( 'woocommerce_layered_nav_default_query_type', 'and' );
+        			} else {
+        				$_chosen_attributes[ $taxonomy ]['query_type'] = strtolower( $_GET[ $query_type_name ] );
+        			}
+        
+        		}
+        
+        		return $filtered_posts;
+        	}
+
+	        add_filter( 'loop_shop_post_in', 'ob_add_categories_filter', 5, 1 );            
+            
+            
+        }
+        
+    }
     
 	/**
 	 * Date filter Init.

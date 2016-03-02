@@ -5,7 +5,7 @@ Plugin URI: http://
 Description: 
 Version: 0.1
 Author: Romapad
-Author URI: http://
+Author URI: http://romapad.ru
 Text Domain: gr-woo-products-filter
 Domain Path: /languages
 
@@ -49,10 +49,18 @@ class GR_Date_Filter {
 			include_once 'includes/gr-class-wc-query.php';
             include_once 'includes/gr-class-date-filter.php';
             include_once 'includes/gr-class-layered-nav-filters.php';
+            include_once 'includes/gr-class-price-filter.php';
+            include_once( 'includes/gr-class-layered_nav.php' );
+            
 			// Register the integration.
             function gr_register_widgets() {
             	register_widget( 'GR_Widget_Date_Filter' );
-                register_widget( 'GR_Widget_Layered_Nav_Filters' );    
+                unregister_widget( 'WC_Widget_Layered_Nav_Filters' );
+                unregister_widget( 'WC_Widget_Price_Filter' );     
+                unregister_widget( 'WC_Widget_Layered_Nav' );
+                register_widget( 'GR_Widget_Layered_Nav_Filters' );  
+                register_widget( 'GR_Widget_Price_Filter' );  
+		        register_widget( 'GR_Widget_Layered_Nav' );                
             }
             add_action( 'widgets_init', 'gr_register_widgets' );             
 		} else {

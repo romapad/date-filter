@@ -84,6 +84,15 @@ class GR_Widget_Date_Filter extends WC_Widget {
 		if ( ! empty( $_GET['orderby'] ) ) {
 			$fields .= '<input type="hidden" name="orderby" value="' . esc_attr( $_GET['orderby'] ) . '" />';
 		}
+        
+        
+		if ( ! empty( $_GET['min_price'] ) ) {
+			$fields .= '<input type="hidden" name="min_price" value="' . esc_attr( $_GET['min_price'] ) . '" />';
+		}
+
+		if ( ! empty( $_GET['max_price'] ) ) {
+			$fields .= '<input type="hidden" name="max_price" value="' . esc_attr( $_GET['max_price'] ) . '" />';
+		}        
 
 		if ( $_chosen_attributes ) {
 			foreach ( $_chosen_attributes as $attribute => $data ) {
@@ -137,7 +146,7 @@ class GR_Widget_Date_Filter extends WC_Widget {
 			return;
 		}   
 
-        function dateDifference($date_1 , $date_2 , $diffFormat = '%a' )
+        function dateDifference($date_1 , $date_2 , $diffFormat = '%a')
         {
             $datetime1 = date_create($date_1);
             $datetime2 = date_create($date_2);
