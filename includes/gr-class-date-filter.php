@@ -178,9 +178,4 @@ class GR_Widget_Date_Filter extends WC_Widget {
 		</form>';
 		$this->widget_end( $args );
 	}
-}
-
-function gr_register_widgets() {
-	register_widget( 'GR_Widget_Date_Filter' );
-}
-add_action( 'widgets_init', 'gr_register_widgets' );    
+}  

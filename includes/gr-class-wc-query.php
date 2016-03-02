@@ -143,9 +143,7 @@ class GR_WC_Query extends WC_Query {
         	
         <?php }      
         add_action('wp_print_styles', 'date_filter_style_to_head'); 
-                    
-            
-            
+                         
 		}
         
 	}

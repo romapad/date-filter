@@ -48,7 +48,13 @@ class GR_Date_Filter {
 			// Include our class.
 			include_once 'includes/gr-class-wc-query.php';
             include_once 'includes/gr-class-date-filter.php';
+            include_once 'includes/gr-class-layered-nav-filters.php';
 			// Register the integration.
+            function gr_register_widgets() {
+            	register_widget( 'GR_Widget_Date_Filter' );
+                register_widget( 'GR_Widget_Layered_Nav_Filters' );    
+            }
+            add_action( 'widgets_init', 'gr_register_widgets' );             
 		} else {
 			// throw an admin error if you like
 		}
@@ -58,10 +64,9 @@ class GR_Date_Filter {
 
 		define( 'GR_DATE_FILTER_URL', plugin_dir_url( __FILE__ ) );
 		define( 'GR_DATE_FILTER_DIR', plugin_dir_path( __FILE__ ) );
-	}    
+	}
+         
 
 }
 $GR_Date_Filter = new GR_Date_Filter( __FILE__ );
 endif;
-
-
