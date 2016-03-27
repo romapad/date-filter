@@ -42,9 +42,8 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 		if ( $attribute_taxonomies ) {
 			foreach ( $attribute_taxonomies as $tax ) {
-				$attribute_key = wc_attribute_taxonomy_name( $tax->attribute_name );
-				if ( taxonomy_exists( $attribute_key ) ) {
-					$attribute_array[ $attribute_key ] = $tax->attribute_label;
+				if ( taxonomy_exists( wc_attribute_taxonomy_name( $tax->attribute_name ) ) ) {
+					$attribute_array[ $tax->attribute_name ] = $tax->attribute_label;
 				}
 			}
 		}
@@ -215,10 +214,10 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 					echo '</select>';
 
-					wc_enqueue_js("
-                    jQuery('.dropdown_layered_nav_$taxonomy_filter').change(function(){
-
-							location.href = '" . esc_url_raw( preg_replace( '%\/page/[0-9]+%', '', add_query_arg( 'filtering', '1', remove_query_arg( array('page','filter_' . $taxonomy_filter) ) ) ) ) . "&filter_$taxonomy_filter=' + jQuery(this).val();
+					wc_enqueue_js( "
+						jQuery( '.dropdown_layered_nav_$taxonomy_filter' ).change( function() {
+							var term_id = parseInt( jQuery( this ).val(), 10 );
+							location.href = '" . preg_replace( '%\/page\/[0-9]+%', '', str_replace( array( '&amp;', '%2C' ), array( '&', ',' ), esc_js( add_query_arg( 'filtering', '1', remove_query_arg( array( 'page', 'filter_' . $taxonomy_filter ) ) ) ) ) ) . "&filter_$taxonomy_filter=' + ( isNaN( term_id ) ? '' : term_id );
 						});
 					" );
 
@@ -335,6 +334,7 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 						$link = add_query_arg( 'max_date', $_GET['max_date'], $link );
 					}                    
 
+					// Orderby
 					if ( isset( $_GET['orderby'] ) ) {
 						$link = add_query_arg( 'orderby', $_GET['orderby'], $link );
 					}
@@ -344,8 +344,8 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 					$class = '';
 					$link  = add_query_arg( $arg, implode( ',', $current_filter ), $link );
 
-					
 
+					// Search Arg
 					if ( get_search_query() ) {
 						$link = add_query_arg( 's', get_search_query(), $link );
 					}
