@@ -45,7 +45,6 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
                 $attribute_key = wc_attribute_taxonomy_name( $tax->attribute_name );
                 if ( taxonomy_exists( $attribute_key ) ) {
                     $attribute_array[ $tax->attribute_name ] = $tax->attribute_name;
-                    echo wc_attribute_taxonomy_name( $tax->attribute_name );
                 }
 			}
 		}
@@ -111,8 +110,6 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
             } else {
                 $taxonomy = wc_attribute_taxonomy_name($instance['attribute']);
             }
-            
-            echo $instance['attribute'];
         } else {
            $taxonomy = $this->settings['attribute']['std'];
         }
