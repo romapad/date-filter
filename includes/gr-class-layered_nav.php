@@ -42,9 +42,11 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 		if ( $attribute_taxonomies ) {
 			foreach ( $attribute_taxonomies as $tax ) {
-				if ( taxonomy_exists( wc_attribute_taxonomy_name( $tax->attribute_name ) ) ) {
-					$attribute_array[ $tax->attribute_name ] = $tax->attribute_label;
-				}
+                $attribute_key = wc_attribute_taxonomy_name( $tax->attribute_name );
+                if ( taxonomy_exists( $attribute_key ) ) {
+                    $attribute_array[ $tax->attribute_name ] = $tax->attribute_name;
+                    echo wc_attribute_taxonomy_name( $tax->attribute_name );
+                }
 			}
 		}
 
@@ -103,7 +105,19 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 		$current_term = is_tax() ? get_queried_object()->term_id : '';
 		$current_tax  = is_tax() ? get_queried_object()->taxonomy : '';
-		$taxonomy     = isset( $instance['attribute'] ) ? $instance['attribute'] : $this->settings['attribute']['std']; // Changed this to use the attribute as is, since we set it now as the taxonomy name (not as label)
+        if (isset( $instance['attribute'] )) {
+            if ($instance['attribute'] == GR_PRODUCTS_CATEGORY) {
+                $taxonomy = $instance['attribute'];
+            } else {
+                $taxonomy = wc_attribute_taxonomy_name($instance['attribute']);
+            }
+            
+            echo $instance['attribute'];
+        } else {
+           $taxonomy = $this->settings['attribute']['std'];
+        }
+        
+
 		$query_type   = isset( $instance['query_type'] ) ? $instance['query_type'] : $this->settings['query_type']['std'];
 		$display_type = isset( $instance['display_type'] ) ? $instance['display_type'] : $this->settings['display_type']['std'];
 
