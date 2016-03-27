@@ -50,12 +50,12 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 		}
 
 		$this->settings = array(
-			'title'        => array(
+			'title' => array(
 				'type'  => 'text',
 				'std'   => __( 'Filter by', 'woocommerce' ),
 				'label' => __( 'Title', 'woocommerce' )
 			),
-			'attribute'    => array(
+			'attribute' => array(
 				'type'    => 'select',
 				'std'     => '',
 				'label'   => __( 'Attribute', 'woocommerce' ),
@@ -70,7 +70,7 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 					'dropdown' => __( 'Dropdown', 'woocommerce' )
 				)
 			),
-			'query_type'   => array(
+			'query_type' => array(
 				'type'    => 'select',
 				'std'     => 'and',
 				'label'   => __( 'Query type', 'woocommerce' ),
@@ -125,15 +125,15 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 			case 'name' :
 				$get_terms_args['orderby']    = 'name';
 				$get_terms_args['menu_order'] = false;
-				break;
+			break;
 			case 'id' :
 				$get_terms_args['orderby']    = 'id';
 				$get_terms_args['order']      = 'ASC';
 				$get_terms_args['menu_order'] = false;
-				break;
+			break;
 			case 'menu_order' :
 				$get_terms_args['menu_order'] = 'ASC';
-				break;
+			break;
 		}
 
 		$terms = get_terms( $taxonomy, $get_terms_args );
@@ -146,12 +146,14 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 			$this->widget_start( $args, $instance );
 
+			// Force found when option is selected - do not force found on taxonomy attributes
 			if ( ! is_tax() && is_array( $_chosen_attributes ) && array_key_exists( $taxonomy, $_chosen_attributes ) ) {
 				$found = true;
 			}
 
 			if ( 'dropdown' == $display_type ) {
 
+				// skip when viewing the taxonomy
 				if ( $current_tax && $taxonomy == $current_tax ) {
 
 					$found = false;
@@ -168,6 +170,7 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 					foreach ( $terms as $term ) {
 
+						// If on a term page, skip that term in widget list
 						if ( $term->term_id == $current_term ) {
 							continue;
 						}
@@ -183,6 +186,7 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 						$option_is_set = ( isset( $_chosen_attributes[ $taxonomy ] ) && in_array( $term->term_id, $_chosen_attributes[ $taxonomy ]['terms'] ) );
 
+						// If this is an AND query, only show options with count > 0
 						if ( 'and' == $query_type ) {
 
 							$count = sizeof( array_intersect( $_products_in_term, WC()->query->filtered_product_ids ) );
@@ -195,6 +199,7 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 								continue;
 							}
 
+						// If this is an OR query, show all options so search can be expanded
 						} else {
 
 							$count = sizeof( array_intersect( $_products_in_term, WC()->query->unfiltered_product_ids ) );
@@ -205,7 +210,7 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 						}
 
-						echo '<option value="' . esc_attr( $term->term_id ) . '" ' . selected( isset( $_GET[ 'filter_' . $taxonomy_filter ] ) ? $_GET[ 'filter_' . $taxonomy_filter ] : '', $term->term_id, false ) . '>' . esc_html( $term->name ) . '</option>';
+						echo '<option value="' . esc_attr( $term->term_id ) . '" ' . selected( isset( $_GET[ 'filter_' . $taxonomy_filter ] ) ? $_GET[ 'filter_' . $taxonomy_filter ] : '' , $term->term_id, false ) . '>' . esc_html( $term->name ) . '</option>';
 					}
 
 					echo '</select>';
@@ -215,13 +220,13 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 							location.href = '" . esc_url_raw( preg_replace( '%\/page/[0-9]+%', '', add_query_arg( 'filtering', '1', remove_query_arg( array('page','filter_' . $taxonomy_filter) ) ) ) ) . "&filter_$taxonomy_filter=' + jQuery(this).val();
 						});
-					");
-
+					" );
 
 				}
 
 			} else {
 
+				// List display
 				echo '<ul>';
 
 				foreach ( $terms as $term ) {
@@ -237,10 +242,12 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 					$option_is_set = ( isset( $_chosen_attributes[ $taxonomy ] ) && in_array( $term->term_id, $_chosen_attributes[ $taxonomy ]['terms'] ) );
 
+					// skip the term for the current archive
 					if ( $current_term == $term->term_id ) {
 						continue;
 					}
 
+					// If this is an AND query, only show options with count > 0
 					if ( 'and' == $query_type ) {
 
 						$count = sizeof( array_intersect( $_products_in_term, WC()->query->filtered_product_ids ) );
@@ -253,6 +260,7 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 							continue;
 						}
 
+					// If this is an OR query, show all options so search can be expanded
 					} else {
 
 						$count = sizeof( array_intersect( $_products_in_term, WC()->query->unfiltered_product_ids ) );
@@ -276,23 +284,27 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 						$current_filter[] = $term->term_id;
 					}
 
+					// Base Link decided by current page
 					if ( defined( 'SHOP_IS_ON_FRONT' ) ) {
 						$link = home_url();
-					} elseif ( is_post_type_archive( 'product' ) || is_page( wc_get_page_id( 'shop' ) ) ) {
+					} elseif ( is_post_type_archive( 'product' ) || is_page( wc_get_page_id('shop') ) ) {
 						$link = get_post_type_archive_link( 'product' );
 					} else {
-						$link = get_term_link( get_query_var( 'term' ), get_query_var( 'taxonomy' ) );
+						$link = get_term_link( get_query_var('term'), get_query_var('taxonomy') );
 					}
 
+					// All current filters
 					if ( $_chosen_attributes ) {
 						foreach ( $_chosen_attributes as $name => $data ) {
 							if ( $name !== $taxonomy ) {
 
+								// Exclude query arg for current term archive term
 								while ( in_array( $current_term, $data['terms'] ) ) {
 									$key = array_search( $current_term, $data );
-									unset( $data['terms'][ $key ] );
+									unset( $data['terms'][$key] );
 								}
 
+								// Remove pa_ and sanitize
 								$filter_name = sanitize_title( str_replace( 'pa_', '', $name ) );
 
 								if ( ! empty( $data['terms'] ) ) {
@@ -306,6 +318,7 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 						}
 					}
 
+					// Min/Max
 					if ( isset( $_GET['min_price'] ) ) {
 						$link = add_query_arg( 'min_price', $_GET['min_price'], $link );
 					}
@@ -337,10 +350,12 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 						$link = add_query_arg( 's', get_search_query(), $link );
 					}
 
+					// Post Type Arg
 					if ( isset( $_GET['post_type'] ) ) {
 						$link = add_query_arg( 'post_type', $_GET['post_type'], $link );
 					}
 
+					// Query type Arg
 					if ( $query_type == 'or' && ! ( sizeof( $current_filter ) == 1 && isset( $_chosen_attributes[ $taxonomy ]['terms'] ) && is_array( $_chosen_attributes[ $taxonomy ]['terms'] ) && in_array( $term->term_id, $_chosen_attributes[ $taxonomy ]['terms'] ) ) ) {
 						$link = add_query_arg( 'query_type_' . sanitize_title( $instance['attribute'] ), 'or', $link );
 					}
@@ -359,7 +374,7 @@ class GR_Widget_Layered_Nav extends WC_Widget_Layered_Nav {
 
 				echo '</ul>';
 
-			}
+			} // End display type conditional
 
 			$this->widget_end( $args );
 

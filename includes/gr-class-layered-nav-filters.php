@@ -115,4 +115,3 @@ class GR_Widget_Layered_Nav_Filters extends WC_Widget {
 		}
 	}
 }
-   
